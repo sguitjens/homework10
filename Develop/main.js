@@ -6,6 +6,12 @@ const managers = [];
 const engineers = [];
 const interns = [];
 
+const mgrTemplate = "./templates/manager.html";
+const engTemplate = "./templates/engineer.html";
+const internTemplate = "./templates/intern.html";
+const indexHTML = "./output/index.html"
+const indexHTMLTemplate = "./templates/indextempl.html";
+
 const askQuestions = (role) => {
   return inquirer.prompt([ // returns answers
     {
@@ -104,20 +110,66 @@ const addAnotherMember = () => {
       askQuestions("intern");
     }
     else {
-      console.log("ENGINEERS", engineers);
-      console.log("INTERNS", interns);
+      // console.log("MANAGERS", managers);
+      // console.log("ENGINEERS", engineers);
+      // console.log("INTERNS", interns);
+      // make the page
+      writeToHTML(managers);
+      writeToHTML(engineers);
+      writeToHTML(interns);
     }
   })
 }
 
 askQuestions.catch = (err) => {
-  console.log("ERROR RETURNED:", err);
+  console.log("ERROR in ask questions:", err);
 };
 
+const setUpIndexHTML = () => {
+  fs.readFile(indexHTMLTemplate, "utf8", (err, data) => {
+    if(err) {
+      return console.log("ERROR in reading file in setUpIndexHTML", err);  
+    }
+    fs.writeFile(indexHTML, data, 'utf8', (err) => {
+      if (err) {
+        return console.log("ERROR writing file in setUpIndexHTMP", err);
+      }
+    });
+  });
+}
 
+const writeToHTML = (list) => {
+  setUpIndexHTML();
+  for(let i = 0; i < list.length; ++i) {
+    employeeTemplate = mgrTemplate;
+    if(list === engineers) {
+      employeeTemplate = engTemplate;
+    }
+    else if (list === interns) {
+      employeeTemplate = internTemplate;
+    }
+    fs.readFile(employeeTemplate, "utf8", (err, data) => {
+      if(err) {
+        return console.log("ERROR reading mgrTeplate", err);  
+      }
+      data = data.replace(/EMPL_NAME/g, list[i].name)
+      data = data.replace(/EMPL_ID/g, list[i].id);
+      data = data.replace(/EMPL_EMAIL/g, list[i].email);
+      data = data.replace(/EMPL_OTHER/g, list[i].office);
+      fs.readFile(indexHTML, "utf8", (err, contents) =>  {
+        if(err) {
+          return console,log("ERROR reading index.html", err);
+        }
+        console.log("contents1:", contents);
+        contents = contents.replace(/<!--##CARDS##-->/g, data);
+        console.log("contents2:", contents);
+        fs.writeFile(indexHTML, contents, "utf8", (err) => {
+          return console.log("ERROR writing to index.html", err); // error here null
+        })
+      });
+      // console.log("data", data);
+    })
+  }
+}
 
 askQuestions("manager");
-
-// askQuestions("engineer");
-// askQuestions("intern");
-// then process the answers (includes determining whether to ask more questions)
