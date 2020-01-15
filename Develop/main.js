@@ -19,7 +19,7 @@ const askQuestions = (role) => {
       name: "name",
       message: `Please enter full name for the ${role}:`,
       required: true,
-      default: "Super Person"
+      default: `Super ${role}`
     },
     {
       type: "input",
@@ -43,7 +43,7 @@ const askQuestions = (role) => {
       return inquirer.prompt({
         type: "input",
         name: "office",
-        message: "Please enter your office number:",
+        message: "Please enter the manager's office number:",
         required: true,
         default: "No Office"
       })
@@ -114,8 +114,13 @@ const addAnotherMember = () => {
       // console.log("ENGINEERS", engineers);
       // console.log("INTERNS", interns);
       // make the page
+      // console.log("SET UP INDEX.HTML PAGE");
+      setUpIndexHTML();
+      // console.log("RUN MANAGERS:");
       writeToHTML(managers);
+      // console.log("RUN ENGINEERS");
       writeToHTML(engineers);
+      // console.log("RUN INTERNS");
       writeToHTML(interns);
     }
   })
@@ -138,38 +143,92 @@ const setUpIndexHTML = () => {
   });
 }
 
-const writeToHTML = (list) => {
-  setUpIndexHTML();
-  for(let i = 0; i < list.length; ++i) {
-    employeeTemplate = mgrTemplate;
-    if(list === engineers) {
-      employeeTemplate = engTemplate;
-    }
-    else if (list === interns) {
-      employeeTemplate = internTemplate;
-    }
+// const writeToHTML = (array) => {
+//   setUpIndexHTML();
+//   let result = getListFromArray(array)
+
+// }
+
+// const getListFromArray = (array) => {
+//   // setUpIndexHTML();
+//   let result = "";
+//   let employeeTemplate = mgrTemplate;
+//   let other = "office";
+//   if(array === engineers) {
+//     employeeTemplate = engTemplate;
+//     other = "github";
+//   }
+//   else if (array === interns) {
+//     employeeTemplate = internTemplate;
+//     other = "school";
+//   }
+//   for(let i = 0; i < array.length; ++i) {
+//     return new Promise((resolve, reject) => {
+//       fs.readFile(employeeTemplate, "utf8", (err, data) => {
+//         if(err) {
+//           return console.log(`ERROR reading ${employeeTeplate}`, err);  
+//         }
+//         data = data.replace(/EMPL_NAME/g, array[i].name)
+//         data = data.replace(/EMPL_ID/g, array[i].id);
+//         data = data.replace(/EMPL_EMAIL/g, array[i].email);
+//         data = data.replace(/EMPL_OTHER/g, array[i][other]);
+
+//         result += data;
+//         resolve(result += data);
+//       })
+//     }).then(res => {
+//       console.log("RES", res);
+//       result += res;
+//       return result;
+//     });
+//   }
+// }
+
+
+
+// THE OLD FUNCTION - which at least wrote 
+const writeToHTML = (emplArray) => {
+  // setUpIndexHTML();
+  // let result = "";
+  let employeeTemplate = mgrTemplate;
+  let other = "office";
+  if(emplArray === engineers) {
+    employeeTemplate = engTemplate;
+    other = "github";
+  }
+  else if (emplArray === interns) {
+    employeeTemplate = internTemplate;
+    other = "school";
+  }
+  for(let i = 0; i < emplArray.length; ++i) {
     fs.readFile(employeeTemplate, "utf8", (err, data) => {
       if(err) {
-        return console.log("ERROR reading mgrTeplate", err);  
+        return console.log(`ERROR reading ${employeeTeplate}`, err);  
       }
-      data = data.replace(/EMPL_NAME/g, list[i].name)
-      data = data.replace(/EMPL_ID/g, list[i].id);
-      data = data.replace(/EMPL_EMAIL/g, list[i].email);
-      data = data.replace(/EMPL_OTHER/g, list[i].office);
+      data = data.replace(/EMPL_NAME/g, emplArray[i].name)
+      data = data.replace(/EMPL_ID/g, emplArray[i].id);
+      data = data.replace(/EMPL_EMAIL/g, emplArray[i].email);
+      data = data.replace(/EMPL_OTHER/g, emplArray[i][other]); // this needs to change
       fs.readFile(indexHTML, "utf8", (err, contents) =>  {
         if(err) {
           return console,log("ERROR reading index.html", err);
         }
-        console.log("contents1:", contents);
+        // console.log("contents1:", contents);
         contents = contents.replace(/<!--##CARDS##-->/g, data);
-        console.log("contents2:", contents);
+        // console.log("contents2:", contents);
+        // for loop should happen within the writefile method
         fs.writeFile(indexHTML, contents, "utf8", (err) => {
-          return console.log("ERROR writing to index.html", err); // error here null
+          if(err) {
+            return console.log("ERROR writing to index.html", err); // error here null
+          }
+          console.log("NO ERROR!")
         })
+        //
       });
       // console.log("data", data);
     })
   }
 }
+// THE OLD FUNCTION
 
 askQuestions("manager");
