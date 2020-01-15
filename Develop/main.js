@@ -162,55 +162,6 @@ const writeToHTML = (emplArray) => {
     console.log("pageHTML AFTER", pageHTML);
     fs.writeFileSync(indexHTML, pageHTML, "utf8");
   }
-}
-
-
-
-// THE OLD FUNCTION - which at least works
-/*
-const writeToHTML = (emplArray) => {
-  // setUpIndexHTML();
-  // let result = "";
-  let employeeTemplate = mgrTemplate;
-  let other = "office";
-  if(emplArray === engineers) {
-    employeeTemplate = engTemplate;
-    other = "github";
-  }
-  else if (emplArray === interns) {
-    employeeTemplate = internTemplate;
-    other = "school";
-  }
-  for(let i = 0; i < emplArray.length; ++i) {
-    fs.readFile(employeeTemplate, "utf8", (err, data) => {
-      if(err) {
-        return console.log(`ERROR reading ${employeeTeplate}`, err);  
-      }
-      data = data.replace(/EMPL_NAME/g, emplArray[i].name)
-      data = data.replace(/EMPL_ID/g, emplArray[i].id);
-      data = data.replace(/EMPL_EMAIL/g, emplArray[i].email);
-      data = data.replace(/EMPL_OTHER/g, emplArray[i][other]); // this needs to change
-      fs.readFile(indexHTML, "utf8", (err, contents) =>  {
-        if(err) {
-          return console,log("ERROR reading index.html", err);
-        }
-        // console.log("contents1:", contents);
-        contents = contents.replace(/<!--##CARDS##-->/g, data);
-        // console.log("contents2:", contents);
-        // for loop should happen within the writefile method
-        fs.writeFile(indexHTML, contents, "utf8", (err) => {
-          if(err) {
-            return console.log("ERROR writing to index.html", err); // error here null
-          }
-          console.log("NO ERROR!")
-        })
-        //
-      });
-      // console.log("data", data);
-    })
-  }
-}
-*/
-// THE OLD FUNCTION
+};
 
 askQuestions("manager");
