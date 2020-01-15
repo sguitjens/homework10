@@ -12,6 +12,8 @@ const internTemplate = "./templates/intern.html";
 const indexHTML = "./output/index.html"
 const indexHTMLTemplate = "./templates/indextempl.html";
 
+let pageHTML = "";
+
 const askQuestions = (role) => {
   return inquirer.prompt([ // returns answers
     {
@@ -131,62 +133,41 @@ askQuestions.catch = (err) => {
 };
 
 const setUpIndexHTML = () => {
-  fs.readFile(indexHTMLTemplate, "utf8", (err, data) => {
-    if(err) {
-      return console.log("ERROR in reading file in setUpIndexHTML", err);  
-    }
-    fs.writeFile(indexHTML, data, 'utf8', (err) => {
-      if (err) {
-        return console.log("ERROR writing file in setUpIndexHTMP", err);
-      }
-    });
-  });
+  fs.writeFileSync(indexHTML, fs.readFileSync(indexHTMLTemplate, "utf8"))
 }
 
-// const writeToHTML = (array) => {
-//   setUpIndexHTML();
-//   let result = getListFromArray(array)
-
-// }
-
-// const getListFromArray = (array) => {
-//   // setUpIndexHTML();
-//   let result = "";
-//   let employeeTemplate = mgrTemplate;
-//   let other = "office";
-//   if(array === engineers) {
-//     employeeTemplate = engTemplate;
-//     other = "github";
-//   }
-//   else if (array === interns) {
-//     employeeTemplate = internTemplate;
-//     other = "school";
-//   }
-//   for(let i = 0; i < array.length; ++i) {
-//     return new Promise((resolve, reject) => {
-//       fs.readFile(employeeTemplate, "utf8", (err, data) => {
-//         if(err) {
-//           return console.log(`ERROR reading ${employeeTeplate}`, err);  
-//         }
-//         data = data.replace(/EMPL_NAME/g, array[i].name)
-//         data = data.replace(/EMPL_ID/g, array[i].id);
-//         data = data.replace(/EMPL_EMAIL/g, array[i].email);
-//         data = data.replace(/EMPL_OTHER/g, array[i][other]);
-
-//         result += data;
-//         resolve(result += data);
-//       })
-//     }).then(res => {
-//       console.log("RES", res);
-//       result += res;
-//       return result;
-//     });
-//   }
-// }
+const writeToHTML = (emplArray) => {
+  // setUpIndexHTML();
+  // let result = "";
+  let employeeTemplate = mgrTemplate;
+  let other = "office";
+  if(emplArray === engineers) {
+    employeeTemplate = engTemplate;
+    other = "github";
+  }
+  else if (emplArray === interns) {
+    employeeTemplate = internTemplate;
+    other = "school";
+  }
+  let emplHTML = fs.readFileSync(employeeTemplate, "utf8");
+  for(let i = 0; i < emplArray.length; ++i) {
+    emplHTML = emplHTML.replace(/EMPL_NAME/g, emplArray[i].name)
+    emplHTML = emplHTML.replace(/EMPL_ID/g, emplArray[i].id);
+    emplHTML = emplHTML.replace(/EMPL_EMAIL/g, emplArray[i].email);
+    emplHTML = emplHTML.replace(/EMPL_OTHER/g, emplArray[i][other]);
+    // console.log("employee template with data", emplHTML);
+    pageHTML = fs.readFileSync(indexHTML, "utf8")
+    console.log("pageHTML BEFORE", pageHTML);
+    pageHTML = pageHTML.replace(/<!--##CARDS##-->/g, emplHTML);
+    console.log("pageHTML AFTER", pageHTML);
+    fs.writeFileSync(indexHTML, pageHTML, "utf8");
+  }
+}
 
 
 
-// THE OLD FUNCTION - which at least wrote 
+// THE OLD FUNCTION - which at least works
+/*
 const writeToHTML = (emplArray) => {
   // setUpIndexHTML();
   // let result = "";
@@ -229,6 +210,7 @@ const writeToHTML = (emplArray) => {
     })
   }
 }
+*/
 // THE OLD FUNCTION
 
 askQuestions("manager");
