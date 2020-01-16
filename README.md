@@ -14,7 +14,7 @@ This is a Node CLI application that allows you to generate an HTML page that sho
 2. Run `npm install`
 3. Run `node main.js`
 4. Follow the prompts to enter your team data
-5. Open the `Output/index.html` in your browser to view the results
+5. Open the `Output/index.html` file in your browser to view the results
 6. If desired, you can run the unit tests using `npm run test` inside of the `test` directory
 
 ## Dependencies:
