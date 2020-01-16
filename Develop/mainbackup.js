@@ -1,8 +1,5 @@
 const inquirer = require("inquirer");
 const fs = require("fs");
-const Manager = require("./lib/Manager.js");
-const Engineer = require("./lib/Engineer.js");
-const Intern = require("./lib/Intern.js");
 
 const managers = [];
 const engineers = [];
@@ -51,8 +48,7 @@ const askQuestions = (role) => {
       })
       .then(result => {
         answers.office = result.office;
-        const mgr = new Manager(answers.name, answers.id, answers.email, result.office);
-        managers.push(mgr);
+        managers.push(answers);
         return addAnotherMember();
       })
     }
@@ -65,9 +61,8 @@ const askQuestions = (role) => {
           default: "No GitHub User Name"
         })
         .then(result => {
-          // answers.github = result.github;
-          const eng = new Engineer(answers.name, answers.id, answers.email, result.github);
-          engineers.push(eng);
+          answers.github = result.github;
+          engineers.push(answers);
           return addAnotherMember();
         })
     }
@@ -80,10 +75,9 @@ const askQuestions = (role) => {
           default: "No School"
         })
         .then(result => {
-          // answers.school = result.school;
-          const itn = new Intern(answers.name, answers.id, answers.email, result.school);
-          interns.push(itn);
-          return addAnotherMember();
+          answers.school = result.school;
+          interns.push(answers);
+          addAnotherMember();
         })
     }
   })
@@ -124,29 +118,21 @@ const setUpIndexHTML = () => {
 
 const writeToHTML = (emplArray) => {
   let employeeTemplate = mgrTemplate;
-  const arrLength = emplArray.length;
-  if (arrLength == 0) {
-    return;
-  }
-  if(emplArray[0].getRole() == "Engineer") {
+  let other = "office";
+  if(emplArray === engineers) {
     employeeTemplate = engTemplate;
+    other = "github";
   }
-  else if(emplArray[0].getRole() == "Intern") {
+  else if (emplArray === interns) {
     employeeTemplate = internTemplate;
+    other = "school";
   }
   let emplHTML = fs.readFileSync(employeeTemplate, "utf8");
-  for(let i = 0; i < arrLength; ++i) {
-    emplHTML = emplHTML.replace(/EMPL_NAME/g, emplArray[i].getName())
-    emplHTML = emplHTML.replace(/EMPL_ID/g, emplArray[i].getId());
-    emplHTML = emplHTML.replace(/EMPL_EMAIL/g, emplArray[i].getEmail());
-    if(emplArray[i].getRole() == "Engineer") {
-      emplHTML = emplHTML.replace(/EMPL_OTHER/g, emplArray[i].getGithub());
-    }
-    else if(emplArray[i].getRole() == "Intern") {
-      emplHTML = emplHTML.replace(/EMPL_OTHER/g, emplArray[i].getSchool());
-    } else { // manager
-      emplHTML = emplHTML.replace(/EMPL_OTHER/g, emplArray[i].getOfficeNumber());
-    }
+  for(let i = 0; i < emplArray.length; ++i) {
+    emplHTML = emplHTML.replace(/EMPL_NAME/g, emplArray[i].name)
+    emplHTML = emplHTML.replace(/EMPL_ID/g, emplArray[i].id);
+    emplHTML = emplHTML.replace(/EMPL_EMAIL/g, emplArray[i].email);
+    emplHTML = emplHTML.replace(/EMPL_OTHER/g, emplArray[i][other]);
     pageHTML = fs.readFileSync(indexHTML, "utf8")
     pageHTML = pageHTML.replace(/<!--##CARDS##-->/g, emplHTML);
     fs.writeFileSync(indexHTML, pageHTML, "utf8");
