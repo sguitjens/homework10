@@ -1,6 +1,5 @@
 const inquirer = require("inquirer");
 const fs = require("fs");
-// const generate = require("./generateHTML");
 
 const managers = [];
 const engineers = [];
@@ -15,7 +14,7 @@ const indexHTMLTemplate = "./templates/indextempl.html";
 let pageHTML = "";
 
 const askQuestions = (role) => {
-  return inquirer.prompt([ // returns answers
+  return inquirer.prompt([
     {
       type: "input",
       name: "name",
@@ -39,9 +38,7 @@ const askQuestions = (role) => {
     }
   ])
   .then(answers => {
-    // console.log("ROLE", role);
     if(role === "manager") {
-      // console.log("MANAGER")
       return inquirer.prompt({
         type: "input",
         name: "office",
@@ -51,13 +48,11 @@ const askQuestions = (role) => {
       })
       .then(result => {
         answers.office = result.office;
-        // console.log("after manager", answers);
         managers.push(answers);
         return addAnotherMember();
       })
     }
     else if(role === "engineer") {
-      // console.log("ENGINEER")
       return inquirer.prompt({
           type: "input",
           name: "github",
@@ -67,15 +62,11 @@ const askQuestions = (role) => {
         })
         .then(result => {
           answers.github = result.github;
-          // console.log("RESULT", result);
-          // console.log("ANSWERS after engineer", answers);
-          // put it in the engineer array
           engineers.push(answers);
           return addAnotherMember();
         })
     }
     else if(role === "intern") {
-      // console.log("INTERN")
       return inquirer.prompt({
           type: "input",
           name: "school",
@@ -85,8 +76,6 @@ const askQuestions = (role) => {
         })
         .then(result => {
           answers.school = result.school;
-          // console.log("after intern", answers);
-          //put it in the intern array
           interns.push(answers);
           addAnotherMember();
         })
@@ -103,8 +92,7 @@ const addAnotherMember = () => {
     required: true,
     default: "Done"
   })
-  .then(result => { // what the user selected
-    // console.log("RESULT", result);
+  .then(result => {
     if(result.another === "engineer") {
       askQuestions("engineer");
     }
@@ -112,17 +100,9 @@ const addAnotherMember = () => {
       askQuestions("intern");
     }
     else {
-      // console.log("MANAGERS", managers);
-      // console.log("ENGINEERS", engineers);
-      // console.log("INTERNS", interns);
-      // make the page
-      // console.log("SET UP INDEX.HTML PAGE");
       setUpIndexHTML();
-      // console.log("RUN MANAGERS:");
       writeToHTML(managers);
-      // console.log("RUN ENGINEERS");
       writeToHTML(engineers);
-      // console.log("RUN INTERNS");
       writeToHTML(interns);
     }
   })
@@ -137,8 +117,6 @@ const setUpIndexHTML = () => {
 }
 
 const writeToHTML = (emplArray) => {
-  // setUpIndexHTML();
-  // let result = "";
   let employeeTemplate = mgrTemplate;
   let other = "office";
   if(emplArray === engineers) {
@@ -151,7 +129,6 @@ const writeToHTML = (emplArray) => {
   }
   let emplHTML = fs.readFileSync(employeeTemplate, "utf8");
   for(let i = 0; i < emplArray.length; ++i) {
-    console.log(`emplHTML BEFORE ${i}:`, emplHTML);
     emplHTML = emplHTML.replace(/EMPL_NAME/g, emplArray[i].name)
     emplHTML = emplHTML.replace(/EMPL_ID/g, emplArray[i].id);
     emplHTML = emplHTML.replace(/EMPL_EMAIL/g, emplArray[i].email);
