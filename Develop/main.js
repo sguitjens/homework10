@@ -151,16 +151,15 @@ const writeToHTML = (emplArray) => {
   }
   let emplHTML = fs.readFileSync(employeeTemplate, "utf8");
   for(let i = 0; i < emplArray.length; ++i) {
+    console.log(`emplHTML BEFORE ${i}:`, emplHTML);
     emplHTML = emplHTML.replace(/EMPL_NAME/g, emplArray[i].name)
     emplHTML = emplHTML.replace(/EMPL_ID/g, emplArray[i].id);
     emplHTML = emplHTML.replace(/EMPL_EMAIL/g, emplArray[i].email);
     emplHTML = emplHTML.replace(/EMPL_OTHER/g, emplArray[i][other]);
-    // console.log("employee template with data", emplHTML);
     pageHTML = fs.readFileSync(indexHTML, "utf8")
-    console.log("pageHTML BEFORE", pageHTML);
     pageHTML = pageHTML.replace(/<!--##CARDS##-->/g, emplHTML);
-    console.log("pageHTML AFTER", pageHTML);
     fs.writeFileSync(indexHTML, pageHTML, "utf8");
+    emplHTML = fs.readFileSync(employeeTemplate, "utf8");
   }
 };
 
