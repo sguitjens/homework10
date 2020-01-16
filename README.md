@@ -2,7 +2,7 @@
 
 ## Project:
 
-This is a Node CLI application that allows you to generate an HTML page that shows each member of a software engineering team. The application first prompts you for information about the team manager, and then for information about the team members. you can enter data for any number of team members, and they may be a mix of engineers and interns.  The data collected are email, id, and specific information based on their role with the company).
+This is a Node CLI application that allows you to generate an HTML page that shows each member of a software engineering team. The application first prompts you for information about the team manager, and then for information about the team members. you can enter data for any number of team members, and they may be a mix of engineers and interns.  The data collected are email, id, and specific information based on the team member's role with the company).
 
 * Below is an example of what the output looks like.
 
@@ -19,6 +19,6 @@ This is a Node CLI application that allows you to generate an HTML page that sho
 
 ## Dependencies:
 
-This application uses the [inquirer](https://www.npmjs.com/package/inquirer) to prompte for information from the user.
+This application uses the [inquirer](https://www.npmjs.com/package/inquirer) to prompt for information from the user.
 
 It uses [jest](https://jestjs.io/) for running the provided unit tests.
